@@ -5,11 +5,13 @@
 #include "Steering_encoder.h"
 #include "Drive_selector.h"
 #include "Steering.h"
+#include "Autonomouscontrol.h"
 
 ReceiverData receiver;
 Steering_encoder_data encoder(30, 28, 32);
 Drive_selector_switch drive_select;
 Steering steering;
+AutoControl autonomous;
 
 // Struct for sending data
 struct sendata {
@@ -68,20 +70,25 @@ void loop()
   
   if (value8 == 1){
     //INFO FROM JETSON
+    autonomous.readWriteSerial(21);
+    wheel = autonomous.getServoRX();
+    moving = autonomous.getMotorsRX();
+    /*
     if (Serial.available() >= total_bytes){
-    i = 0;
-    while(i < total_bytes){
-      buf[i] = Serial.read();
-      i++;
+      i = 0;
+      while(i < total_bytes){
+        buf[i] = Serial.read();
+        i++;
+      }
+    
+      memmove(&bytes,buf,sizeof(bytes));
+      //int val = int(trunc(bytes.value));
+      wheel = bytes.x;
+      moving = bytes.y;
+      values.val = wheel;
+      Serial.write((const uint8_t*)&values, sizeof(values));
     }
-    memmove(&bytes,buf,sizeof(bytes));
-    //int val = int(trunc(bytes.value));
-    wheel = bytes.x;
-    moving = bytes.y;
-    values.val = wheel;
-    Serial.write((const uint8_t*)&values, sizeof(values));
-
-  }
+    */
     //Drive selector data ---------------------------
   int Drive_number = drive_select.Drive_mode(value3, value6, moving, value5, value8, ebrake);
   //Serial.print(Drive_number);
