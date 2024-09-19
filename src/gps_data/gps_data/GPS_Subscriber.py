@@ -4,7 +4,7 @@ from std_msgs.msg import String
 import pymap3d as pm
 import csv
 
-csv_file_path = 'gps_data_tera_new.csv'
+csv_file_path = '/home/tera/ros2_ws2/src/gps_data/gps_data/gps_data_tera_fresh1.csv'
 
 class GPS_Subscriber(Node):
     def __init__(self):
@@ -30,9 +30,9 @@ class GPS_Subscriber(Node):
         self.latitude = float(info[0])
         self.longitude = float(info[1])
         self.altitude = float(info[2])
-        self.csv_writer.writerow([self.latitude, self.longitude, self.altitude])
-        self.csv_file.flush()
         self.x, self.y, self.z = pm.geodetic2enu(self.latitude, self.longitude, self.altitude, self.lat0, self.lon0, self.h0)
+        self.csv_writer.writerow([self.x, self.y, self.z])
+        self.csv_file.flush()
 
     def get_gps_data(self):
         return self.latitude, self.longitude

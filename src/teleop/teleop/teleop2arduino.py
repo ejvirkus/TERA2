@@ -22,17 +22,23 @@ class MinimalSubscriber(Node):
         info = msg.data.split(",")
         #print(info)
         #pedals = abs(int(info[1]))
-        sent = arduino.write(struct.pack("2h", int(info[0]), int(info[1])))
+        #packed = struct.pack("2h", int(info[0]), int(info[1]))
+        #sent = arduino.write(packed)
+        packed = arduino.write(struct.pack("<2h", *[int(info[0]), int(info[1])]))
         #print(f"Pedals: {pedals}")
-        #print(f"Sent: {sent}")
-        time.sleep(0.05)
+        print(f"Sent: {packed}")
+        time.sleep(0.1)
         #self.get_logger().info('I heard: "%s"' % msg.data)
-        try:
-            (val, ) = struct.unpack("h", arduino.read(struct.calcsize("h")))
-            print(f"Received: {val}")
-            #print(struct.calcsize("i"))
-        except:
-            pass
+
+        #Wait until Arduino receives the data and sends it back
+        while True:
+            try:
+                (val, ) = struct.unpack("h", arduino.read(struct.calcsize("h")))
+                print(f"Received: {val}")
+                break
+                #print(struct.calcsize("i"))
+            except:
+                pass
 
 
 

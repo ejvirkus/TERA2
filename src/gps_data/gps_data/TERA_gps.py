@@ -79,9 +79,11 @@ class GpsPublisher(Node):
             
         else:
             self.get_logger().warning("Failed to retrieve valid GPS data:")
+            #'''
             msg = String()
-            msg.data = "Failed to receive data"
+            msg.data = "11.22,11.22,11.22"
             self.publisher.publish(msg)
+            #'''
 
 def main():
     rclpy.init(args=None)
